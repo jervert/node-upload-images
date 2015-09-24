@@ -1,0 +1,25 @@
+{
+  "name": "node-upload-images",
+  "version": "0.0.1",
+  "description": "Upload images and resize",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jervert/node-upload-images.git"
+  },
+  "author": "Antonio Rodríguez Ruiz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jervert/node-upload-images/issues"
+  },
+  "homepage": "https://github.com/jervert/node-upload-images",
+  "dependencies": {
+    "express": "^4.13.3",
+    "gm": "^1.20.0",
+    "multer": "^1.0.5",
+    "underscore": "^1.8.3"
+  }
+}
