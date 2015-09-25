@@ -50,4 +50,11 @@ app.use(express.static('public'));
 app.use(express.static('data'));
 app.use(express.static('uploads'));
 
+app.get('/images/:size/:image', function (req, res, next) {
+  var size = req.param('size'),
+    image = req.param('image');
+  console.log('although this matches');
+  next();
+});
+
 app.listen(3000);
