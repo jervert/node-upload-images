@@ -7,6 +7,19 @@
     <form action="/send-image" method="POST" enctype="multipart/form-data">
       <input type="file" name="image">
       <input type="submit" value="Send">
+
     </form>
+    <ul id="image-list"></ul>
+    <script type="text/javascript">
+      $.ajax({
+        dataType: 'json',
+        url: 'images.json',
+        success: function (data) {
+          $.each(data.images, function (index, image) {
+            $('#image-list').append('<li><img width="96" src="' + image + '" alt=""></li>');
+          });
+        }
+      });
+    </script>
   </body>
 </html>
