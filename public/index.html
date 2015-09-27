@@ -16,7 +16,7 @@
         url: 'images.json',
         success: function (data) {
           $.each(data.images, function (index, image) {
-            $('#image-list').append('<li><img width="96" src="' + image + '" alt=""></li>');
+            $('#image-list').append('<li><a href="/images/1024/' + image + '"><img src="/images/256/' + image + '" alt=""></a></li>');
           });
         }
       });
