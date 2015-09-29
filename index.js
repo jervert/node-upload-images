@@ -112,4 +112,4 @@ app.get('/images/:size/:image', function (req, res) {
   $Q.utils.thumbnailExists(req, res);
 });
 
-app.listen($Q.config.port);
+app.listen(process.env.PORT || $Q.config.port);
