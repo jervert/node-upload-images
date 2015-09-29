@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
   </head>
   <body>
@@ -9,14 +14,15 @@
       <input type="submit" value="Send">
 
     </form>
-    <ul id="image-list"></ul>
+    <div class="row" id="image-list"></div>
     <script type="text/javascript">
       $.ajax({
         dataType: 'json',
         url: 'images.json',
         success: function (data) {
           $.each(data.images, function (index, image) {
-            $('#image-list').append('<li><a href="/images/1024/' + image + '"><img src="/images/256/' + image + '" alt=""></a></li>');
+            $('#image-list').append('<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"><a href="/images/1024/' + image + '" class="thumbnail"><img src="/images/512/' + image + '" alt=""></a></div>');
+
           });
         }
       });
