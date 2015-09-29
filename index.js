@@ -2,7 +2,12 @@
 /*jslint node: true */
 'use strict';
 
-var $Q = {},
+var $Q = {
+  config: {
+    port: 7200,
+    sizes: [256, 1024]
+  }
+},
   fs = require('fs'),
   express = require('express'),
   multer  = require('multer'),
@@ -34,7 +39,6 @@ var $Q = {},
           cb(null, filename);
         });
       });
-      
     }
   }),
   upload = multer({ storage: storage }),
@@ -49,46 +53,60 @@ $Q.utils = {
         res.writeHead(404, {'Content-Type': 'text/html'});
         res.end('Error 404');
       } else {
+        console.log('READ: ' + file);
         res.writeHead(200, {'Content-Type': 'image/jpeg'});
         res.end(data);
       }
     });
-  }
-}
-
-app.post('/send-image', upload.single('image'), function (req, res, next) {
-  res.redirect('/');
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-});
-
-app.use(express.static('public'));
-app.use(express.static('data'));
-app.use(express.static('uploads'));
-
-app.get('/images/:size/:image', function (req, res, next) {
-  var size = req.param('size'),
-    image = req.param('image'),
-    file = 'content/thumbs/' + size + '/'+ image;
-  //gm('uploads/' + image).resize(width [, height [, options]])
-  
-  fs.exists(file, function (exists) {
-    if (exists) {
-      $Q.utils.readFileBinary(res, file);
-    } else {
-      gm('uploads/' + image)
+  },
+  uploadAndRead: function (res, file, image, size) {
+    //gm('uploads/' + image).resize(width [, height [, options]])
+    gm('uploads/' + image)
         .resize(size)
         .autoOrient()
       .write(file, function (err) {
         console.log('WRITE: ' + file);
         $Q.utils.readFileBinary(res, file);
       });
-    }
-  });
+  },
+  thumbnailExists: function (req, res) {
+    var size = req.params.size,
+      image = req.params.image,
+      sizePath = 'content/thumbs/' + size,
+      file = sizePath + '/'+ image,
+      upload = function () {
+        $Q.utils.uploadAndRead(res, file, image, size);
+      };
 
+    fs.exists(file, function (exists) {
+      if (exists) {
+        $Q.utils.readFileBinary(res, file);
+      } else {
+        fs.exists(sizePath, function (exists) {
+          if (exists) {
+            upload();
+          } else {
+            fs.mkdir(sizePath, function (err) {
+              console.log('MKDIR: ' + sizePath);
+              upload();
+            });
+          }
+        });
+      }
+    });
+  }
+};
 
-  
-  //next();
+app.use(express.static('public'));
+app.use(express.static('data'));
+app.use(express.static('uploads'));
+
+app.post('/send-image', upload.single('image'), function (req, res) {
+  res.redirect('/');
 });
 
-app.listen(3000);
+app.get('/images/:size/:image', function (req, res) {
+  $Q.utils.thumbnailExists(req, res);
+});
+
+app.listen($Q.config.port);
