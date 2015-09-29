@@ -10,12 +10,14 @@
   </head>
   <body>
     <h1>node-upload-images</h1>
+    <div class="row">
     <form action="/send-image" method="POST" enctype="multipart/form-data" class="form-inline">
         <div class="form-group">
           <input type="file" name="image" id="input-upload-image">
         </div>
         <button type="submit" class="btn btn-default">Send</button>
     </form>
+    </div>
     <div class="row" id="image-list"></div>
     <script type="text/javascript">
       $.ajax({
