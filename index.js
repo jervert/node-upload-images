@@ -13,6 +13,9 @@ var $Q = {
   multer  = require('multer'),
   _ = require('underscore'),
   gm = require('gm'),
+  imageManipulate = gm.subClass({
+    imageMagick: true
+  }),
   storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads');
@@ -60,8 +63,8 @@ $Q.utils = {
     });
   },
   uploadAndRead: function (res, file, image, size) {
-    //gm('uploads/' + image).resize(width [, height [, options]])
-    gm('uploads/' + image)
+    //imageManipulate('uploads/' + image).resize(width [, height [, options]])
+    imageManipulate('uploads/' + image)
         .resize(size)
         .autoOrient()
       .write(file, function (err) {
