@@ -9,6 +9,7 @@ var $Q = {
   }
 },
   fs = require('fs'),
+  path = require('path'),
   express = require('express'),
   multer  = require('multer'),
   _ = require('underscore'),
@@ -17,10 +18,26 @@ var $Q = {
 
 $Q.utils = require('./node/utils.js')($Q, _);
 
-upload = multer({ storage: multer.diskStorage($Q.utils.multerUpload) });
+upload = multer({
+  storage: multer.diskStorage($Q.utils.multerUpload),
+  fileFilter: function (req, file, cb) {
+    var extension = path.extname(file.originalname);
+    console.log('FILE TYPE: ' + extension);
+    if (extension !== '.jpg' && extension !== '.png') {
+      console.log('FILE REJECTED!');
+      return cb(null, false);
+    }
+    console.log('FILE ACCEPTED!');
+    cb(null, true)
+  }
+});
 
 app.use(express.static('public'));
 app.use(express.static('data'));
+
+app.post('/send-image', upload.single('image'), function (req, res) {
+  res.redirect('/');
+});
 
 app.post('/send-image', upload.single('image'), function (req, res) {
   res.redirect('/');
