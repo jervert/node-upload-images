@@ -59,7 +59,7 @@ module.exports = function ($Q, _) {
     },
     fileFilter: function (file) {
       var extension = path.extname(file.originalname).toLowerCase(),
-        result = extension === '.jpg' || extension === '.png';
+        result = extension === '.jpg' || extension === '.jpeg' || extension === '.png';
       console.log('FILE TYPE: ' + extension);
       console.log(result ? 'FILE ACCEPTED!' : 'FILE REJECTED!');
       return result;
