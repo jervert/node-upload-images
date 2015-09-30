@@ -21,7 +21,7 @@ $Q.utils = require('./node/utils.js')($Q, _);
 upload = multer({
   storage: multer.diskStorage($Q.utils.multerUpload),
   fileFilter: function (req, file, cb) {
-    var extension = path.extname(file.originalname);
+    var extension = path.extname(file.originalname).toLowerCase();
     console.log('FILE TYPE: ' + extension);
     if (extension !== '.jpg' && extension !== '.png') {
       console.log('FILE REJECTED!');
