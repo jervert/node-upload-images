@@ -21,7 +21,6 @@ upload = multer({ storage: multer.diskStorage($Q.utils.multerUpload) });
 
 app.use(express.static('public'));
 app.use(express.static('data'));
-app.use(express.static('uploads'));
 
 app.post('/send-image', upload.single('image'), function (req, res) {
   res.redirect('/');
