@@ -1,4 +1,5 @@
 var fs = require('fs'),
+  path = require('path'),
   gm = require('gm'),
   imageManipulate = gm.subClass({
     imageMagick: true
@@ -56,32 +57,41 @@ module.exports = function ($Q, _) {
         }
       });
     },
-    multerUpload: {
-      destination: function (req, file, cb) {
-        cb(null, 'uploads');
-      },
-      filename: function (req, file, cb) {
-        console.log(file);
-        var fileData = 'data/images.json',
-          filename = file.fieldname + '-' + Date.now() + '.' + _.last(file.originalname.split('.'));
-        fs.readFile(fileData, 'utf8', function (err, data) {
-          if (err) {
-            data = {
-              images: []
-            }
-          } else {
-            data = JSON.parse(data);
-          }
-          data.images.push(filename);
-          console.log(data);
-          fs.writeFile(fileData, JSON.stringify(data), function (err) {
+    fileFilter: function (file) {
+      var extension = path.extname(file.originalname).toLowerCase(),
+        result = extension === '.jpg' || extension === '.png';
+      console.log('FILE TYPE: ' + extension);
+      console.log(result ? 'FILE ACCEPTED!' : 'FILE REJECTED!');
+      return result;
+    },
+    multer: {
+      upload: {
+        destination: function (req, file, cb) {
+          cb(null, 'uploads');
+        },
+        filename: function (req, file, cb) {
+          console.log(file);
+          var fileData = 'data/images.json',
+            filename = file.fieldname + '-' + Date.now() + '.' + _.last(file.originalname.split('.'));
+          fs.readFile(fileData, 'utf8', function (err, data) {
             if (err) {
-              throw err;
+              data = {
+                images: []
+              }
+            } else {
+              data = JSON.parse(data);
             }
-            console.log('It\'s saved!');
-            cb(null, filename);
+            data.images.push(filename);
+            console.log(data);
+            fs.writeFile(fileData, JSON.stringify(data), function (err) {
+              if (err) {
+                throw err;
+              }
+              console.log('It\'s saved!');
+              cb(null, filename);
+            });
           });
-        });
+        }
       }
     }
   };
