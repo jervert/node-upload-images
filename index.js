@@ -12,10 +12,6 @@ var $Q = {
   express = require('express'),
   multer  = require('multer'),
   _ = require('underscore'),
-  gm = require('gm'),
-  imageManipulate = gm.subClass({
-    imageMagick: true
-  }),
   storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads');
@@ -47,58 +43,7 @@ var $Q = {
   upload = multer({ storage: storage }),
   app = express();
 
-$Q.utils = {
-  readFileBinary: function (res, file) {
-    fs.readFile(file, function (err, data) {
-      if (err) {
-        console.log(err);
-        console.log(file);
-        res.writeHead(404, {'Content-Type': 'text/html'});
-        res.end('Error 404');
-      } else {
-        console.log('READ: ' + file);
-        res.writeHead(200, {'Content-Type': 'image/jpeg'});
-        res.end(data);
-      }
-    });
-  },
-  uploadAndRead: function (res, file, image, size) {
-    //imageManipulate('uploads/' + image).resize(width [, height [, options]])
-    imageManipulate('uploads/' + image)
-        .resize(size)
-        .autoOrient()
-      .write(file, function (err) {
-        console.log('WRITE: ' + file);
-        $Q.utils.readFileBinary(res, file);
-      });
-  },
-  thumbnailExists: function (req, res) {
-    var size = req.params.size,
-      image = req.params.image,
-      sizePath = 'content/thumbs/' + size,
-      file = sizePath + '/'+ image,
-      upload = function () {
-        $Q.utils.uploadAndRead(res, file, image, size);
-      };
-
-    fs.exists(file, function (exists) {
-      if (exists) {
-        $Q.utils.readFileBinary(res, file);
-      } else {
-        fs.exists(sizePath, function (exists) {
-          if (exists) {
-            upload();
-          } else {
-            fs.mkdir(sizePath, function (err) {
-              console.log('MKDIR: ' + sizePath);
-              upload();
-            });
-          }
-        });
-      }
-    });
-  }
-};
+$Q.utils = require('./node/utils.js')($Q, _);
 
 app.use(express.static('public'));
 app.use(express.static('data'));
