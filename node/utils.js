@@ -55,6 +55,34 @@ module.exports = function ($Q, _) {
           });
         }
       });
+    },
+    multerUpload: {
+      destination: function (req, file, cb) {
+        cb(null, 'uploads');
+      },
+      filename: function (req, file, cb) {
+        console.log(file);
+        var fileData = 'data/images.json',
+          filename = file.fieldname + '-' + Date.now() + '.' + _.last(file.originalname.split('.'));
+        fs.readFile(fileData, 'utf8', function (err, data) {
+          if (err) {
+            data = {
+              images: []
+            }
+          } else {
+            data = JSON.parse(data);
+          }
+          data.images.push(filename);
+          console.log(data);
+          fs.writeFile(fileData, JSON.stringify(data), function (err) {
+            if (err) {
+              throw err;
+            }
+            console.log('It\'s saved!');
+            cb(null, filename);
+          });
+        });
+      }
     }
   };
 };
