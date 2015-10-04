@@ -30,11 +30,7 @@ app.post('/send-image', upload.single('image'), function (req, res) {
   res.redirect('/');
 });
 
-app.post('/send-image', upload.single('image'), function (req, res) {
-  res.redirect('/');
-});
-
-app.get('/images/:size/:image', function (req, res) {
+app.get('/images/:size/:image', function (req, res) {console.log('aaa');
   $Q.utils.thumbnailExists(req, res);
 });
 

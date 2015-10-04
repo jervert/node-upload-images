@@ -42,8 +42,10 @@ module.exports = function ($Q, _) {
 
       fs.exists(file, function (exists) {
         if (exists) {
+          console.log('EXISTS: ' + file);
           $Q.utils.readFileBinary(res, file);
         } else {
+          console.log('NOT EXISTS: ' + file);
           fs.exists(sizePath, function (exists) {
             if (exists) {
               upload();
