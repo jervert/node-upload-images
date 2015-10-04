@@ -39,3 +39,4 @@ app.get('/images/:size/:image', function (req, res) {
 });
 
 app.listen(process.env.PORT || $Q.config.port);
+console.log('Magic is happening on http://localhost:' + (process.env.PORT || $Q.config.port));
